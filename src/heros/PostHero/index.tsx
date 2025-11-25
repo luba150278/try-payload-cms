@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { formatDateTime } from 'src/utilities/formatDateTime'
 import React from 'react'
 
@@ -14,29 +15,46 @@ export const PostHero: React.FC<{
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
 
+  const firstCategory =
+    Array.isArray(categories) && categories.length > 0 && typeof categories[0] === 'object'
+      ? (categories[0] as { slug?: string; title?: string })
+      : null
+
+  const categorySlug = firstCategory?.slug
+  const categoryTitle = firstCategory?.title
+
   return (
-    <div className="relative -mt-[10.4rem] flex items-end">
+    <div className="relative -mt-[10.4rem] flex items-end dark:bg-black/80 backdrop-blur-md">
       <div className="container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] text-white pb-8">
         <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
-          <div className="uppercase text-sm mb-6">
-            {categories?.map((category, index) => {
-              if (typeof category === 'object' && category !== null) {
-                const { title: categoryTitle } = category
+          {/* ⭐ BREADCRUMBS ⭐ */}
+          <nav className="text-sm mb-5 opacity-90">
+            <ul className="flex gap-2 items-center">
+              <li>
+                <Link href="/" className="hover:underline">
+                  Головна
+                </Link>
+              </li>
 
-                const titleToUse = categoryTitle || 'Untitled category'
+              {categorySlug && (
+                <>
+                  <span>/</span>
+                  <li>
+                    <Link
+                      href={`/categories/${categorySlug}`}
+                      className="hover:underline capitalize"
+                    >
+                      {categoryTitle}
+                    </Link>
+                  </li>
+                </>
+              )}
 
-                const isLast = index === categories.length - 1
-
-                return (
-                  <React.Fragment key={index}>
-                    {titleToUse}
-                    {!isLast && <React.Fragment>, &nbsp;</React.Fragment>}
-                  </React.Fragment>
-                )
-              }
-              return null
-            })}
-          </div>
+              <span>/</span>
+              <li className="capitalize text-gray-400">{title}</li>
+            </ul>
+          </nav>
+          {/* КІНЕЦЬ BREADCRUMBS */}
 
           <div className="">
             <h1 className="mb-6 text-3xl md:text-5xl lg:text-6xl">{title}</h1>
@@ -47,7 +65,6 @@ export const PostHero: React.FC<{
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
                   <p className="text-sm">Author</p>
-
                   <p>{formatAuthors(populatedAuthors)}</p>
                 </div>
               </div>
@@ -55,13 +72,13 @@ export const PostHero: React.FC<{
             {publishedAt && (
               <div className="flex flex-col gap-1">
                 <p className="text-sm">Date Published</p>
-
                 <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
               </div>
             )}
           </div>
         </div>
       </div>
+
       <div className="min-h-[80vh] select-none">
         {heroImage && typeof heroImage !== 'string' && (
           <Media fill priority imgClassName="-z-10 object-cover" resource={heroImage} />

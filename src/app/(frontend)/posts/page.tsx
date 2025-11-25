@@ -7,6 +7,8 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
+import Link from 'next/link'
+import PAGINATION_LIMIT from '@/utilities/paginationLimit'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -17,7 +19,8 @@ export default async function Page() {
   const posts = await payload.find({
     collection: 'posts',
     depth: 1,
-    limit: 12,
+    limit: PAGINATION_LIMIT,
+
     overrideAccess: false,
     select: {
       title: true,
@@ -28,11 +31,23 @@ export default async function Page() {
   })
 
   return (
-    <div className="pt-24 pb-24">
+    <div className="pt-4 pb-24">
       <PageClient />
+      <nav className="container text-sm mb-5 opacity-90">
+        <ul className="flex gap-2 items-center">
+          <li>
+            <Link href="/" className="hover:underline">
+              Головна
+            </Link>
+          </li>
+
+          <span>/</span>
+          <li className="capitalize text-gray-400">Рецепти</li>
+        </ul>
+      </nav>
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
-          <h1>Posts</h1>
+          <h1>Рецепти</h1>
         </div>
       </div>
 
@@ -40,7 +55,7 @@ export default async function Page() {
         <PageRange
           collection="posts"
           currentPage={posts.page}
-          limit={12}
+          limit={PAGINATION_LIMIT}
           totalDocs={posts.totalDocs}
         />
       </div>

@@ -8,14 +8,43 @@ export const Header: GlobalConfig = {
   access: {
     read: () => true,
   },
+  // fields: [
+  //   {
+  //     name: 'navItems',
+  //     type: 'array',
+  //     fields: [
+  //       link({
+  //         appearances: false,
+  //       }),
+  //     ],
+  //     maxRows: 6,
+  //     admin: {
+  //       initCollapsed: true,
+  //       components: {
+  //         RowLabel: '@/Header/RowLabel#RowLabel',
+  //       },
+  //     },
+  //   },
+  // ],
   fields: [
     {
       name: 'navItems',
       type: 'array',
       fields: [
-        link({
-          appearances: false,
-        }),
+        link({ appearances: false }),
+        {
+          name: 'children',
+          type: 'array',
+          fields: [
+            link({ appearances: false }),
+            // можна додати ще глибший children, якщо треба
+            {
+              name: 'children',
+              type: 'array',
+              fields: [link({ appearances: false })],
+            },
+          ],
+        },
       ],
       maxRows: 6,
       admin: {
