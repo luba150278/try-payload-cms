@@ -1,26 +1,3 @@
-// import React from 'react'
-// import { getPayload } from 'payload'
-// import config from '@payload-config'
-
-// export default async function CategoryPage({ params }: { params: { slug: string } }) {
-//   const payload = await getPayload({ config })
-//   const { slug } = params
-
-//   const category = await payload.find({
-//     collection: 'categories',
-//     where: { slug: { equals: slug } },
-//     limit: 1,
-//   })
-
-//   if (!category.docs.length) return <p>Категорія не знайдена</p>
-
-//   return (
-//     <div className="container mx-auto py-10">
-//       <h1 className="text-3xl font-bold mb-4">{category.docs[0].title}</h1>
-//       {/* Тут можна додати блок з постами цієї категорії */}
-//     </div>
-//   )
-// }
 import React from 'react'
 import { getPayload, type PaginatedDocs } from 'payload'
 import config from '@payload-config'
@@ -46,8 +23,14 @@ interface Post {
   }
 }
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
-  const { slug } = params
+type Args = {
+  params: Promise<{
+    slug?: string
+  }>
+}
+
+export default async function CategoryPage({ params: paramsPromise }: Args) {
+  const { slug } = await paramsPromise
   const payload = await getPayload({ config })
 
   // 1️⃣ Знаходимо категорію
