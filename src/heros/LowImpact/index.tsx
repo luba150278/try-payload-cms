@@ -15,8 +15,6 @@ type LowImpactHeroType =
     })
 
 export const LowImpactHero: React.FC<LowImpactHeroType> = ({ children, richText }) => {
-  console.log(children)
-  console.log(richText)
 
   if (!children  && (!richText || richText.root.children.length===0)) return null
   return (

@@ -16,9 +16,13 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage'
+import { cloudinaryAdapter } from './cloudinaryAdapter'
+import { v2 } from 'cloudinary'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
 
 export default buildConfig({
   admin: {
@@ -67,6 +71,17 @@ export default buildConfig({
   globals: [Header, Footer],
   plugins: [
     ...plugins,
+    cloudStoragePlugin({
+      collections: {
+        media: {
+          adapter: cloudinaryAdapter,
+          disableLocalStorage: true,
+          generateFileURL: ({ filename }) => {
+            return v2.url(filename, { secure: true })
+          },
+        },
+      },
+    }),
     // storage-adapter-placeholder
   ],
   secret: process.env.PAYLOAD_SECRET,
